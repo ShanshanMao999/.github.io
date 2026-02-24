@@ -90,41 +90,40 @@
     }
     @media (max-width: 680px) {
       .hero-inner { grid-template-columns: 1fr; text-align: center; padding: 36px 24px 32px; }
-      .avatar { margin: 0 auto; }
+      .avatar-wrap { margin: 0 auto; }
       .links { justify-content: center; }
       .pills { justify-content: center; }
     }
 
-    .avatar-wrap{
-  width: 140px;
-  height: 140px;
-  border-radius: 24px;
-  position: relative;
-  overflow: hidden;                 /* 关键：裁切不溢出 */
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.50);
-  flex: 0 0 auto;                   /* 如果你是 flex，锁死不被挤压 */
-}
+    /* ── Avatar ── */
+    .avatar-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.50);
+      flex: 0 0 auto;
+    }
 
-/* 头像本体：永远铺满 + cover */
-.avatar-img{
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;                /* 关键：不变形，自动裁切 */
-  object-position: 50% 20%;         /* 关键：把脸往上提一点（你这张图更合适） */
-  transform: scale(1.06);           /* 轻微放大，避免边缘露空 */
-}
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: 50% 20%;
+      transform: scale(1.06);
+    }
 
-/* 霓虹玻璃感的叠加层（贴合你页面风格） */
-.avatar-wrap::after{
-  content:"";
-  position:absolute; inset:0;
-  background: linear-gradient(135deg, rgba(107,138,255,0.28), rgba(34,211,238,0.16));
-  mix-blend-mode: screen;           /* 更“贴合”背景 */
-  opacity: 0.55;
-  pointer-events:none;
-}
+    .avatar-wrap::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(107,138,255,0.28), rgba(34,211,238,0.16));
+      mix-blend-mode: screen;
+      opacity: 0.55;
+      pointer-events: none;
+    }
 
     .hero-content h1 {
       font-family: var(--serif);
@@ -368,7 +367,18 @@
 
       <div class="hero-inner">
         <div class="avatar-wrap" aria-label="Shanshan Mao avatar">
-            <img class="avatar-img" src="assets/avatar.png" alt="Shanshan Mao" loading="lazy">
+          <!--
+            IMPORTANT: This path assumes index.html is at REPO ROOT
+            and avatar.png is inside the assets/ subfolder.
+            Repo structure should be:
+              /index.html          (this file)
+              /assets/avatar.png
+              /assets/cv.pdf
+          -->
+          <img class="avatar-img"
+               src="./assets/avatar.png"
+               alt="Shanshan Mao"
+               onerror="this.onerror=null;this.src='./assets/avatar.jpg';">
         </div>
         <div class="hero-content">
           <h1>Shanshan Mao</h1>
@@ -396,7 +406,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
               GitHub
             </a>
-            <!-- Email link built by JS to prevent Cloudflare email obfuscation -->
             <a class="btn" id="emailBtn" href="#">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               Email
@@ -427,7 +436,7 @@
         <div class="kpi-row">
           <div class="kpi">
             <div class="kpi-label">Core Question</div>
-            <div class="kpi-value">Cooperation → Hierarchy</div>
+            <div class="kpi-value">Cooperation &rarr; Hierarchy</div>
           </div>
           <div class="kpi">
             <div class="kpi-label">Key Metric</div>
@@ -631,11 +640,7 @@
 
   </div>
 
-  <!--
-    ═══════════════════════════════════════════════════
-    EMAIL SETUP (JS-built to bypass Cloudflare obfuscation)
-    ═══════════════════════════════════════════════════
-  -->
+  <!-- EMAIL (JS-built to bypass Cloudflare obfuscation) -->
   <script data-cfasync="false">
   (function(){
     var u1 = 'shanshanmao5233';
@@ -644,35 +649,22 @@
     var u2 = 'sxm1550';
     var d2 = 'student.bham.ac.uk';
     var e2 = u2 + '@' + d2;
-
-    // Hero email button
     var eb = document.getElementById('emailBtn');
     if(eb) eb.href = 'mail' + 'to:' + e1;
-
-    // Contact section
     var v1 = document.getElementById('emailVal1');
     var c1 = document.getElementById('contactEmail1');
     if(v1) v1.textContent = e1;
     if(c1) c1.onclick = function(){ window.location.href = 'mail' + 'to:' + e1; };
-
     var v2 = document.getElementById('emailVal2');
     var c2 = document.getElementById('contactEmail2');
     if(v2) v2.textContent = e2;
     if(c2) c2.onclick = function(){ window.location.href = 'mail' + 'to:' + e2; };
-
-    // Year
     var y = document.getElementById('y');
     if(y) y.textContent = new Date().getFullYear();
   })();
   </script>
 
-  <!--
-    ═══════════════════════════════════════════════════
-    MULTI-AGENT HIERARCHY SIMULATION
-    data-cfasync="false" prevents Cloudflare Rocket Loader
-    from deferring this script
-    ═══════════════════════════════════════════════════
-  -->
+  <!-- MULTI-AGENT HIERARCHY SIMULATION -->
   <script data-cfasync="false">
   (function(){
     var canvas = document.getElementById('simCanvas');
@@ -741,8 +733,7 @@
     };
 
     function Edge(a, b) {
-      this.a = a;
-      this.b = b;
+      this.a = a; this.b = b;
       this.alpha = 0.45 + Math.random() * 0.35;
       this.prog  = Math.random();
     }
@@ -754,23 +745,19 @@
 
     function init() {
       resize();
-      agents = [];
-      edges  = [];
+      agents = []; edges = [];
       for (var i = 0; i < N; i++) agents.push(new Agent(i));
     }
 
     function draw(t) {
       ctx.clearRect(0, 0, W, H);
-
-      // attract nearby agents toward leaders
       var i, j, a, b, d, f;
       for (i = 0; i < agents.length; i++) {
         a = agents[i];
         if (a.rank < LEADER_THR) continue;
         for (j = 0; j < agents.length; j++) {
           if (i === j) continue;
-          b = agents[j];
-          d = dist(a, b);
+          b = agents[j]; d = dist(a, b);
           if (d < ATTRACT_R && d > 10) {
             f = ATTRACT_F * (ATTRACT_R - d);
             b.vx += (a.x - b.x) / d * f;
@@ -778,141 +765,77 @@
           }
         }
       }
-
-      for (i = 0; i < agents.length; i++) {
-        agents[i].update(t);
-        agents[i].inEdges = 0;
-      }
-
-      // spawn edges
+      for (i = 0; i < agents.length; i++) { agents[i].update(t); agents[i].inEdges = 0; }
       if (edges.length < EDGE_MAX) {
         for (var k = 0; k < 2; k++) {
           if (Math.random() > LINK_PROB * N) continue;
-          i = Math.floor(Math.random() * N);
-          j = Math.floor(Math.random() * N);
+          i = Math.floor(Math.random() * N); j = Math.floor(Math.random() * N);
           if (i !== j && dist(agents[i], agents[j]) < 200) {
-            if (agents[i].rank > agents[j].rank) {
-              a = agents[i]; b = agents[j];
-            } else {
-              a = agents[j]; b = agents[i];
-            }
+            if (agents[i].rank > agents[j].rank) { a = agents[i]; b = agents[j]; }
+            else { a = agents[j]; b = agents[i]; }
             edges.push(new Edge(a, b));
           }
         }
       }
-
-      // draw & decay edges
       var e, ax, ay, bx, by, isDec, px, py, ap, mx, my, angle, sz;
       for (k = edges.length - 1; k >= 0; k--) {
-        e = edges[k];
-        e.alpha -= LINK_DECAY;
-        e.prog  += 0.012;
+        e = edges[k]; e.alpha -= LINK_DECAY; e.prog += 0.012;
         if (e.prog > 1) e.prog -= 1;
         if (e.alpha <= 0) { edges.splice(k, 1); continue; }
-
         e.b.inEdges++;
         ax = e.a.x; ay = e.a.y; bx = e.b.x; by = e.b.y;
         isDec = e.a.isDeceiver || e.b.isDeceiver;
-
-        // edge line
-        ctx.beginPath();
-        ctx.moveTo(ax, ay);
-        ctx.lineTo(bx, by);
-        ctx.strokeStyle = isDec
-          ? 'rgba(244,114,182,' + (e.alpha * 0.22) + ')'
-          : 'rgba(107,138,255,' + (e.alpha * 0.25) + ')';
-        ctx.lineWidth = 0.7;
-        ctx.stroke();
-
-        // signal dot
-        px = ax + (bx - ax) * e.prog;
-        py = ay + (by - ay) * e.prog;
-        ctx.beginPath();
-        ctx.arc(px, py, 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = isDec
-          ? 'rgba(244,114,182,' + (e.alpha * 0.55) + ')'
-          : 'rgba(107,138,255,' + (e.alpha * 0.55) + ')';
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+        ctx.strokeStyle = isDec ? 'rgba(244,114,182,' + (e.alpha * 0.22) + ')' : 'rgba(107,138,255,' + (e.alpha * 0.25) + ')';
+        ctx.lineWidth = 0.7; ctx.stroke();
+        px = ax + (bx - ax) * e.prog; py = ay + (by - ay) * e.prog;
+        ctx.beginPath(); ctx.arc(px, py, 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = isDec ? 'rgba(244,114,182,' + (e.alpha * 0.55) + ')' : 'rgba(107,138,255,' + (e.alpha * 0.55) + ')';
         ctx.fill();
-
-        // arrowhead at 70%
         if (e.alpha > 0.15) {
-          ap = 0.7;
-          mx = ax + (bx - ax) * ap;
-          my = ay + (by - ay) * ap;
-          angle = Math.atan2(by - ay, bx - ax);
-          sz = 4;
+          ap = 0.7; mx = ax + (bx - ax) * ap; my = ay + (by - ay) * ap;
+          angle = Math.atan2(by - ay, bx - ax); sz = 4;
           ctx.beginPath();
           ctx.moveTo(mx + Math.cos(angle) * sz, my + Math.sin(angle) * sz);
           ctx.lineTo(mx + Math.cos(angle + 2.5) * sz, my + Math.sin(angle + 2.5) * sz);
           ctx.lineTo(mx + Math.cos(angle - 2.5) * sz, my + Math.sin(angle - 2.5) * sz);
           ctx.closePath();
-          ctx.fillStyle = isDec
-            ? 'rgba(244,114,182,' + (e.alpha * 0.25) + ')'
-            : 'rgba(107,138,255,' + (e.alpha * 0.25) + ')';
+          ctx.fillStyle = isDec ? 'rgba(244,114,182,' + (e.alpha * 0.25) + ')' : 'rgba(107,138,255,' + (e.alpha * 0.25) + ')';
           ctx.fill();
         }
       }
-
-      // draw agents
       var isLeader, baseR, r, gr, p;
       for (i = 0; i < agents.length; i++) {
-        a = agents[i];
-        isLeader = a.rank > LEADER_THR;
+        a = agents[i]; isLeader = a.rank > LEADER_THR;
         baseR = isLeader ? 4.8 : 1.8 + a.rank * 1.5;
         r = baseR + (a.isDeceiver ? Math.sin(a.phase) * 1.0 : 0);
-
-        // leader glow
         if (isLeader) {
           gr = ctx.createRadialGradient(a.x, a.y, 0, a.x, a.y, 22);
-          gr.addColorStop(0, 'rgba(107,138,255,0.15)');
-          gr.addColorStop(1, 'rgba(107,138,255,0)');
-          ctx.beginPath();
-          ctx.arc(a.x, a.y, 22, 0, Math.PI * 2);
-          ctx.fillStyle = gr;
-          ctx.fill();
+          gr.addColorStop(0, 'rgba(107,138,255,0.15)'); gr.addColorStop(1, 'rgba(107,138,255,0)');
+          ctx.beginPath(); ctx.arc(a.x, a.y, 22, 0, Math.PI * 2); ctx.fillStyle = gr; ctx.fill();
         }
-
-        // deceiver pulse
         if (a.isDeceiver) {
           p = 0.07 + Math.sin(a.phase) * 0.05;
           gr = ctx.createRadialGradient(a.x, a.y, 0, a.x, a.y, 16);
-          gr.addColorStop(0, 'rgba(244,114,182,' + p + ')');
-          gr.addColorStop(1, 'rgba(244,114,182,0)');
-          ctx.beginPath();
-          ctx.arc(a.x, a.y, 16, 0, Math.PI * 2);
-          ctx.fillStyle = gr;
-          ctx.fill();
+          gr.addColorStop(0, 'rgba(244,114,182,' + p + ')'); gr.addColorStop(1, 'rgba(244,114,182,0)');
+          ctx.beginPath(); ctx.arc(a.x, a.y, 16, 0, Math.PI * 2); ctx.fillStyle = gr; ctx.fill();
         }
-
-        // core dot
-        ctx.beginPath();
-        ctx.arc(a.x, a.y, r, 0, Math.PI * 2);
-        if (a.isDeceiver) {
-          ctx.fillStyle = 'rgba(244,114,182,' + (0.45 + a.cred * 0.45) + ')';
-        } else if (isLeader) {
-          ctx.fillStyle = 'rgba(107,138,255,' + (0.65 + a.rank * 0.35) + ')';
-        } else {
-          ctx.fillStyle = 'rgba(34,211,238,' + (0.25 + a.rank * 0.45) + ')';
-        }
+        ctx.beginPath(); ctx.arc(a.x, a.y, r, 0, Math.PI * 2);
+        if (a.isDeceiver) { ctx.fillStyle = 'rgba(244,114,182,' + (0.45 + a.cred * 0.45) + ')'; }
+        else if (isLeader) { ctx.fillStyle = 'rgba(107,138,255,' + (0.65 + a.rank * 0.35) + ')'; }
+        else { ctx.fillStyle = 'rgba(34,211,238,' + (0.25 + a.rank * 0.45) + ')'; }
         ctx.fill();
-
-        // connectivity ring
         if (a.inEdges > 3 && !a.isDeceiver) {
-          ctx.beginPath();
-          ctx.arc(a.x, a.y, r + 3, 0, Math.PI * 2);
+          ctx.beginPath(); ctx.arc(a.x, a.y, r + 3, 0, Math.PI * 2);
           ctx.strokeStyle = 'rgba(107,138,255,' + (0.12 + a.inEdges * 0.02) + ')';
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
+          ctx.lineWidth = 0.6; ctx.stroke();
         }
       }
-
       requestAnimationFrame(draw);
     }
 
-    // ── Start ──
     init();
     requestAnimationFrame(draw);
-
     var resizeTimer;
     window.addEventListener('resize', function() {
       clearTimeout(resizeTimer);
