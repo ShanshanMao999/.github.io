@@ -33,29 +33,31 @@
       box-shadow:var(--shadow);
       overflow:hidden;
     }
-.banner{
+    .banner{
   height:220px;
-  position:relative;
+  position:absolute;
+  inset:0 0 auto 0;   /* 顶部贴住，只占上方 220px */
+  z-index:0;
   background: url("assets/banner.png") center/cover no-repeat;
   filter:saturate(1.05);
 }
 
-/* 压暗，让截图变成“背景”而不是“说明书” */
+/* 压暗层（让截图退到背景） */
 .banner::before{
   content:"";
   position:absolute; inset:0;
-  background: rgba(0,0,0,.55);
+  background: rgba(0,0,0,.70);
   opacity:0.55;
 }
 
-/* 霓虹渐变融合层：让它更贴合你的主题 */
+/* 霓虹融合层（贴合你的主题） */
 .banner::after{
   content:"";
   position:absolute; inset:0;
   background:
     radial-gradient(700px 300px at 30% 30%, rgba(124,92,255,.40), transparent 60%),
     radial-gradient(700px 300px at 70% 30%, rgba(0,229,255,.30), transparent 60%),
-    linear-gradient(180deg, rgba(7,10,18,.10), rgba(7,10,18,.92));
+    linear-gradient(180deg, rgba(7,10,18,.05), rgba(7,10,18,.95));
   opacity:0.75;
 }
     .heroInner{display:flex; gap:18px; padding:18px 18px 22px}
