@@ -33,15 +33,31 @@
       box-shadow:var(--shadow);
       overflow:hidden;
     }
-    .banner{
-      height:220px;
-      background:
-        url("assets/banner.jpg") center/cover no-repeat,
-        radial-gradient(700px 300px at 30% 30%, rgba(124,92,255,.35), transparent 60%),
-        radial-gradient(700px 300px at 70% 30%, rgba(0,229,255,.25), transparent 60%),
-        linear-gradient(90deg, rgba(124,92,255,.25), rgba(0,229,255,.20));
-      filter:saturate(1.15);
-    }
+.banner{
+  height:220px;
+  position:relative;
+  background: url("assets/banner.jpg") center/cover no-repeat;
+  filter:saturate(1.05);
+}
+
+/* 压暗，让截图变成“背景”而不是“说明书” */
+.banner::before{
+  content:"";
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.55);
+  opacity:0.55;
+}
+
+/* 霓虹渐变融合层：让它更贴合你的主题 */
+.banner::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(700px 300px at 30% 30%, rgba(124,92,255,.40), transparent 60%),
+    radial-gradient(700px 300px at 70% 30%, rgba(0,229,255,.30), transparent 60%),
+    linear-gradient(180deg, rgba(7,10,18,.10), rgba(7,10,18,.92));
+  opacity:0.75;
+}
     .heroInner{display:flex; gap:18px; padding:18px 18px 22px}
     .avatar{
       width:118px;height:118px;border-radius:22px; flex:0 0 auto;
