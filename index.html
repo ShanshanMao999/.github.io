@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shanshan Mao · Multi-Agent Systems · Hierarchy & Deception</title>
+  <meta name="description" content="PhD researcher in Multi-Agent Systems, hierarchy emergence, trophic incoherence, evolvable deception, ABM simulations." />
+  <style>
+    :root{
+      --bg:#070A12; --panel:#0B1020cc; --card:#0F1733cc;
+      --text:#EAF0FF; --muted:#A9B6E6; --accent:#7C5CFF; --accent2:#00E5FF;
+      --line:#22306b55;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 20%, rgba(124,92,255,.35), transparent 60%),
+        radial-gradient(800px 600px at 80% 10%, rgba(0,229,255,.25), transparent 55%),
+        radial-gradient(900px 600px at 65% 80%, rgba(255,82,130,.18), transparent 60%),
+        linear-gradient(180deg, #050713 0%, #070A12 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 18px 70px}
+    .hero{
+      position:relative; border:1px solid var(--line); border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(18,25,55,.8) 0%, rgba(8,10,18,.6) 100%);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .banner{
+      height:220px;
+      background:
+        url("assets/banner.jpg") center/cover no-repeat,
+        radial-gradient(700px 300px at 30% 30%, rgba(124,92,255,.35), transparent 60%),
+        radial-gradient(700px 300px at 70% 30%, rgba(0,229,255,.25), transparent 60%),
+        linear-gradient(90deg, rgba(124,92,255,.25), rgba(0,229,255,.20));
+      filter:saturate(1.15);
+    }
+    .heroInner{display:flex; gap:18px; padding:18px 18px 22px}
+    .avatar{
+      width:118px;height:118px;border-radius:22px; flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        url("assets/avatar.jpg") center/cover no-repeat,
+        linear-gradient(135deg, rgba(124,92,255,.35), rgba(0,229,255,.25));
+      box-shadow:0 12px 40px rgba(0,0,0,.35);
+      margin-top:-64px;
+    }
+    h1{margin:0;font-size:28px;letter-spacing:.2px}
+    .subtitle{margin:8px 0 0;color:var(--muted);line-height:1.5}
+    .pillRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .pill{
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(15,23,51,.55);
+      font-size:13px;color:#dbe3ff
+    }
+    .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,51,.55);
+      color:var(--text); text-decoration:none;
+      transition:transform .08s ease, border-color .2s ease;
+      font-weight:600; font-size:14px;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:rgba(124,92,255,.55)}
+    .btn .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;margin-top:16px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}.avatar{margin-top:-58px}}
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(11,16,32,.62);
+      box-shadow:0 16px 50px rgba(0,0,0,.35);
+      padding:16px 16px 14px;
+    }
+    .card h2{
+      margin:0 0 10px;font-size:16px;letter-spacing:.35px;
+      text-transform:uppercase;color:#c9d3ff
+    }
+    .card p{margin:0;color:var(--muted);line-height:1.55}
+    .list{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+    .item{
+      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(15,23,51,.45)
+    }
+    .item .title{font-weight:700}
+    .item .meta{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.45}
+    .tagRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .tag{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:6px 8px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(124,92,255,.10);
+      color:#dfe6ff
+    }
+    .footer{
+      margin-top:18px;color:rgba(233,240,255,.65);
+      font-size:13px;text-align:center
+    }
+    .mini{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center
+    }
+    .kpi{
+      padding:10px 12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(15,23,51,.45);
+      min-width:180px
+    }
+    .kpi .k{font-size:12px;color:rgba(233,240,255,.70);text-transform:uppercase;letter-spacing:.3px}
+    .kpi .v{margin-top:6px;font-weight:800;font-size:16px}
+    .sep{height:1px;background:rgba(255,255,255,.08);margin:12px 0}
+    .pub a{color:#dfe6ff;text-decoration:none;border-bottom:1px dashed rgba(223,230,255,.35)}
+    .pub a:hover{border-bottom-color:rgba(0,229,255,.65)}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="banner"></div>
+
+      <div class="heroInner">
+        <div class="avatar" aria-label="avatar"></div>
+
+        <div>
+          <h1>Shanshan Mao</h1>
+          <div class="subtitle">
+            PhD Researcher · Multi-Agent Systems (ABM) · Hierarchy Emergence · Trophic Incoherence · Evolvable Deception
+            <br/>
+            University of Birmingham (School of Computer Science)
+          </div>
+
+          <div class="pillRow">
+            <div class="pill">Agent-Based Modelling</div>
+            <div class="pill">Self-Organisation</div>
+            <div class="pill">Hierarchy Dynamics</div>
+            <div class="pill">Reputation / Credibility</div>
+            <div class="pill">Deception & Collapse</div>
+          </div>
+
+          <div class="links">
+            <a class="btn" href="assets/cv.pdf" target="_blank" rel="noopener">
+              <span class="dot"></span> CV (PDF)
+            </a>
+            <a class="btn" href="https://scholar.google.com/" target="_blank" rel="noopener">
+              <span class="dot"></span> Google Scholar
+            </a>
+            <a class="btn" href="https://arxiv.org/" target="_blank" rel="noopener">
+              <span class="dot"></span> arXiv
+            </a>
+            <a class="btn" href="https://github.com/" target="_blank" rel="noopener">
+              <span class="dot"></span> GitHub
+            </a>
+            <a class="btn" href="mailto:your.email@domain.com">
+              <span class="dot"></span> Email
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Research</h2>
+        <p>
+          I build multi-agent simulations to study how social hierarchies emerge, collapse, and rebuild under
+          cooperation, ability heterogeneity, and information manipulation. I quantify hierarchy order using
+          <b>Trophic Incoherence</b> and track dynamic interaction networks (speaker→listener) during collective tasks.
+        </p>
+
+        <div class="sep"></div>
+
+        <div class="mini">
+          <div class="kpi">
+            <div class="k">Core theme</div>
+            <div class="v">From cooperation → hierarchy</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Phase-2 focus</div>
+            <div class="v">Evolvable deception & collapse</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Metric</div>
+            <div class="v">Trophic Incoherence (TI)</div>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <ul class="list">
+          <li class="item">
+            <div class="title">Hierarchy Emergence under Minimal Heterogeneity</div>
+            <div class="meta">ABM + distributed coordination + reinforcement → stable ordered interaction graphs.</div>
+            <div class="tagRow">
+              <span class="tag">ABM</span><span class="tag">TI</span><span class="tag">Self-Organisation</span>
+            </div>
+          </li>
+
+          <li class="item">
+            <div class="title">Evolvable Deception & Hierarchy Collapse</div>
+            <div class="meta">Agents evolve lying probability/magnitude; detection/credibility feedback shapes stability.</div>
+            <div class="tagRow">
+              <span class="tag">Deception</span><span class="tag">Evolution</span><span class="tag">Credibility</span>
+            </div>
+          </li>
+
+          <li class="item">
+            <div class="title">Measurement & Diagnostics</div>
+            <div class="meta">Network logging, robustness checks, seed sweeps, and reproducible pipelines.</div>
+            <div class="tagRow">
+              <span class="tag">Reproducibility</span><span class="tag">Diagnostics</span><span class="tag">Python/JS</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Selected Publications</h2>
+
+        <ul class="list pub">
+          <li class="item">
+            <div class="title">
+              From Cooperation to Hierarchy: Investigating the Minimal Conditions for Emergent Social Structures in Multi-Agent Systems
+            </div>
+            <div class="meta">
+              <b>EvoApplications 2026 (LNCS)</b> ·
+              <a href="#" target="_blank" rel="noopener">paper</a> ·
+              <a href="#" target="_blank" rel="noopener">code</a>
+            </div>
+          </li>
+
+          <li class="item">
+            <div class="title">Evolvable Deception and the Collapse of Social Hierarchies in a Multi-Agent System</div>
+            <div class="meta">
+              (in progress) · <a href="#" target="_blank" rel="noopener">preprint</a>
+            </div>
+          </li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h2>Projects</h2>
+        <ul class="list">
+          <li class="item">
+            <div class="title">MAS Simulator</div>
+            <div class="meta">Interactive simulation + batch experiments + TI monitoring.</div>
+          </li>
+          <li class="item">
+            <div class="title">Deception Module</div>
+            <div class="meta">Evolving lying traits (p, m), detection, and credibility/endorsement signals.</div>
+          </li>
+          <li class="item">
+            <div class="title">Analysis Toolkit</div>
+            <div class="meta">Seed sweeps, curves, heatmaps, robustness statistics, reproducible outputs.</div>
+          </li>
+        </ul>
+
+        <div class="sep"></div>
+
+        <h2>Contact</h2>
+        <p>
+          Email: <b>your.email@domain.com</b><br/>
+          Location: Birmingham / Europe<br/>
+          GitHub: <b>@your-handle</b>
+        </p>
+      </div>
+    </section>
+
+    <div class="footer">
+      © <span id="y"></span> Shanshan Mao · Built with GitHub Pages · Minimal JS, fast load.
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
